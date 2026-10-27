@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://pearlpoint.vercel.app/</loc></url><url><loc>https://pearlpoint.vercel.app/services.html</loc></url><url><loc>https://pearlpoint.vercel.app/team.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/mercy-adeyemi.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/emmanuel-adeyemi.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/micheal-balogun.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/roland-megbotowon.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/james-emmanuel.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/bright-ayodeji.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/davies-adeyemi.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/daniel-ogunbiyi.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/ayomide-holo.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/opeyemi-opatayo.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/success-ayomide.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/temidayo-williams.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/experts/mercy-owolabi.html</loc></url>
-<url><loc>https://pearlpoint.vercel.app/work.html</loc></url><url><loc>https://pearlpoint.vercel.app/about.html</loc></url><url><loc>https://pearlpoint.vercel.app/faq.html</loc></url><url><loc>https://pearlpoint.vercel.app/contact.html</loc></url></urlset>
+  <url><loc>https://pearlpoint.vercel.app/</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/services</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/team</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/mercy-adeyemi</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/emmanuel-adeyemi</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/micheal-balogun</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/roland-megbotowon</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/james-emmanuel</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/bright-ayodeji</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/davies-adeyemi</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/daniel-ogunbiyi</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/ayomide-holo</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/opeyemi-opatayo</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/success-ayomide</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/temidayo-williams</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/experts/mercy-owolabi</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/work</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/about</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/faq</loc></url>
+  <url><loc>https://pearlpoint.vercel.app/contact</loc></url>
+</urlset>
