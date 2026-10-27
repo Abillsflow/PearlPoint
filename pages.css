@@ -127,3 +127,23 @@
 @media(max-width:1050px){.pp-footer-main{grid-template-columns:1.2fr .8fr 1fr;gap:35px}.pp-footer-contact-col{grid-column:2/4;display:grid;grid-template-columns:1fr 1fr;column-gap:24px;align-items:start}.pp-footer-contact-col .pp-footer-label{grid-column:1/-1;margin-bottom:15px}.pp-footer-contact-col>p{margin-top:0}.pp-footer-status{align-self:end;margin-bottom:5px}}
 @media(max-width:650px){.pp-footer-premium{padding:0 6% 20px}.pp-footer-topline{min-height:52px;font-size:6px;letter-spacing:1px}.pp-footer-main{grid-template-columns:1fr 1fr;gap:36px 20px;padding:38px 0 35px}.pp-footer-brand-col{grid-column:1/-1}.pp-footer-brand-col h2{font-size:42px;margin-top:27px}.pp-footer-brand-col>p{max-width:360px}.pp-footer-nav-col{gap:13px}.pp-footer-nav-col:nth-of-type(3){grid-column:1/-1}.pp-footer-contact-col{grid-column:1/-1;display:block;padding-top:24px;border-top:1px solid #ffffff20}.pp-footer-contact-col .pp-footer-label{margin-bottom:18px}.pp-footer-contact-col>p{margin:12px 0 17px}.pp-footer-bottom{align-items:flex-start;flex-direction:column;gap:12px;font-size:8px}.pp-footer-whatsapp{max-width:100%}}
 @media(prefers-reduced-motion:reduce){.pp-footer-status i{animation:none!important}.pp-footer-whatsapp,.pp-footer-whatsapp:before,.pp-footer-nav-col>a,.pp-footer-nav-col>a:before,.pp-footer-nav-col>a b,.pp-footer-phone i,.pp-footer-bottom>a b{transition:none!important}}
+
+
+/* Global PearlPoint WhatsApp contact: champagne icon, no exposed phone number */
+.pp-footer-whatsapp-link{display:inline-flex;align-items:center;gap:10px;white-space:normal!important;font:600 12px/1.5 var(--font)!important;letter-spacing:0!important;transition:color .25s,transform .3s}
+.pp-footer-whatsapp-link:hover{color:#d8be91}
+.pp-footer-whatsapp-link>i{margin-left:2px}
+.pp-footer-whatsapp-svg{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border:1px solid #d8be9155;border-radius:50%;color:#d8be91;transition:background .3s,border-color .3s,transform .3s}
+.pp-footer-whatsapp-svg svg{display:block;width:17px;height:17px;fill:currentColor}
+.pp-footer-whatsapp-link:hover .pp-footer-whatsapp-svg{background:#d8be9118;border-color:#d8be91;transform:translateY(-2px)}
+.pp-whatsapp-float{position:fixed;z-index:9999;right:clamp(18px,3vw,34px);bottom:clamp(18px,3vw,32px);display:grid;place-items:center;width:62px;height:62px;border-radius:50%;background:#d8be91;color:#222522;border:1px solid #f7f3eb80;box-shadow:0 10px 30px #2225222b,0 0 0 7px #d8be911a;text-decoration:none;isolation:isolate;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .3s}
+.pp-whatsapp-float:before{content:"";position:absolute;inset:-6px;border:1px solid #d8be9170;border-radius:50%;animation:ppWhatsappRing 3.2s ease-out infinite;pointer-events:none}
+.pp-whatsapp-float svg{width:29px;height:29px;fill:currentColor;transition:transform .35s}
+.pp-whatsapp-float:hover{transform:translateY(-4px) scale(1.035);background:#e5d1aa;box-shadow:0 15px 38px #22252235,0 0 0 9px #d8be9120}
+.pp-whatsapp-float:hover svg{transform:rotate(-8deg) scale(1.06)}
+.pp-whatsapp-float-tooltip{position:absolute;right:calc(100% + 13px);padding:10px 13px;border:1px solid #d8be9140;background:#222522;color:#f7f3eb;font:500 10px var(--body);white-space:nowrap;opacity:0;translate:8px 0;pointer-events:none;transition:opacity .25s,translate .25s;box-shadow:0 8px 22px #22252220}
+.pp-whatsapp-float:hover .pp-whatsapp-float-tooltip,.pp-whatsapp-float:focus-visible .pp-whatsapp-float-tooltip{opacity:1;translate:0 0}
+.pp-whatsapp-float:focus-visible{outline:2px solid #222522;outline-offset:4px}
+@keyframes ppWhatsappRing{0%{transform:scale(.9);opacity:.65}70%,100%{transform:scale(1.2);opacity:0}}
+@media(max-width:620px){.pp-whatsapp-float{width:56px;height:56px;right:17px;bottom:17px}.pp-whatsapp-float svg{width:26px;height:26px}.pp-footer-whatsapp-link{font-size:12px!important}}
+@media(prefers-reduced-motion:reduce){.pp-whatsapp-float,.pp-whatsapp-float:before,.pp-whatsapp-float svg,.pp-whatsapp-float-tooltip,.pp-footer-whatsapp-link,.pp-footer-whatsapp-svg{animation:none!important;transition:none!important}}
