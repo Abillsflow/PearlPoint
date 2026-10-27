@@ -98,9 +98,11 @@
     const backdrop = document.createElement('div');
     backdrop.className = 'service-modal-backdrop';
     backdrop.setAttribute('aria-hidden', 'true');
-    backdrop.innerHTML = '<section class="service-modal" role="dialog" aria-modal="true" aria-label="Service details"><div class="service-modal-topline"><span>PEARLPOINT / SERVICE OVERVIEW</span><button class="service-modal-close" type="button" aria-label="Close service details">×</button></div></section>';
+    backdrop.innerHTML = '<section class="service-modal" role="dialog" aria-modal="true" aria-label="Service details"><div class="service-modal-topline"><span>PEARLPOINT / SERVICE OVERVIEW</span><button class="service-modal-close" type="button" aria-label="Close service details">×</button></div><div class="service-modal-preview"><img src="" alt=""></div></section>';
     document.body.appendChild(backdrop);
     const dialog = backdrop.querySelector('.service-modal');
+    const modalPreview = dialog.querySelector('.service-modal-preview img');
+    const imageFor = index => objects[index]?.querySelector('.service-image');
     details.forEach(detail => dialog.appendChild(detail));
     const controls = originalDetails?.querySelector('.showroom-controls');
     if (controls) dialog.appendChild(controls);
@@ -115,13 +117,18 @@
         return { x: scene.clientWidth / 2 - objects[i].offsetWidth / 2 + offset * gap,
           y: scene.clientHeight / 2 - objects[i].offsetHeight / 2 + (distance ? 13 + distance * 3 : -7),
           z: distance ? -distance * 90 : 90,
-          scale: distance === 0 ? (mobile ? 1.04 : 1.17) : distance === 1 ? .76 : .52,
+          scale: distance === 0 ? (mobile ? 1.24 : 1.48) : distance === 1 ? .78 : .56,
           rotateY: offset * (mobile ? -8 : -11),
           autoAlpha: distance > (mobile ? 1 : 2) ? 0 : distance === 0 ? 1 : .72 };
       });
     };
     const render = (next, instant = false) => {
       active = (next + objects.length) % objects.length;
+      const selectedImage = imageFor(active);
+      if (modalPreview && selectedImage) {
+        modalPreview.src = selectedImage.getAttribute('src');
+        modalPreview.alt = ['Website design preview','E-commerce storefront preview','Paid media campaign preview','SEO analytics preview','Automation workflow preview','Product feed and Merchant Center preview'][active];
+      }
       const poses = layout(active);
       objects.forEach((object, i) => {
         object.style.zIndex = String(20 - Math.abs(i - active));
