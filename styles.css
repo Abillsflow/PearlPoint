@@ -45,3 +45,21 @@ body.service-modal-open{overflow:hidden}
 .showcase-object .website-canvas,.showcase-object .commerce-canvas,.showcase-object .campaign-canvas,.showcase-object .search-canvas,.showcase-object .systems-canvas,.showcase-object .feed-canvas{position:relative;overflow:hidden;background:#f2eee6}
 .showcase-object .website-canvas>*:not(.service-image),.showcase-object .commerce-canvas>*:not(.service-image),.showcase-object .campaign-canvas>*:not(.service-image),.showcase-object .search-canvas>*:not(.service-image),.showcase-object .systems-canvas>*:not(.service-image),.showcase-object .feed-canvas>*:not(.service-image){display:none!important}
 .showcase-object .service-image{border:1px solid #ffffff20}
+
+
+/* Refined product-showroom scale and visual-first service modal */
+.showcase-object{width:clamp(220px,25vw,340px);height:clamp(270px,33vw,420px)}
+.showcase-object .service-image{object-fit:contain;background:#f7f5ef;padding:0}
+.showcase-object .object-label{font-size:9px;letter-spacing:1.8px;color:#e2d6bf;text-shadow:0 1px 10px #0008;top:calc(100% + 19px)}
+.showcase-object .object-shadow{height:32px;filter:blur(22px);opacity:.9}
+.scene-caption{font-size:8px;color:#aaa99e}
+.scene-instruction{font-size:8px;color:#b4b2a7}
+.showroom-counter{font-size:16px}
+.showroom-counter small{font-size:12px}
+.showroom-counter b{font-size:8px}
+.service-modal{width:min(820px,100%);padding:clamp(22px,4vw,42px);max-height:90vh}
+.service-modal-preview{width:100%;height:clamp(190px,32vh,300px);background:#ebe6dc;border:1px solid #22252212;display:grid;place-items:center;overflow:hidden;margin-bottom:30px}
+.service-modal-preview img{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#f7f3eb}
+.service-modal .showroom-detail h3{font-size:clamp(34px,5vw,52px)}
+@media(max-width:760px){.showcase-object{width:clamp(190px,54vw,270px);height:clamp(240px,67vw,330px)}.showcase-object .object-label{font-size:8px}.service-modal-preview{height:220px;margin-bottom:22px}.service-modal{max-height:92vh}}
+@media(max-width:430px){.showcase-object{width:clamp(180px,58vw,230px);height:clamp(225px,70vw,285px)}.service-modal-preview{height:190px}}
