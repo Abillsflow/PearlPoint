@@ -93,7 +93,7 @@
       const gap = mobile ? Math.min(window.innerWidth * .47, 185) : Math.min(window.innerWidth * .235, 315);
       return objects.map((_, i) => {
         const offset = i - index, distance = Math.abs(offset);
-        return { x: offset * gap, y: distance ? 13 + distance * 3 : -7, z: distance ? -distance * 90 : 90,
+        return { x: scene.clientWidth / 2 - objects[i].offsetWidth / 2 + offset * gap, y: scene.clientHeight / 2 - objects[i].offsetHeight / 2 + (distance ? 13 + distance * 3 : -7), z: distance ? -distance * 90 : 90,
           scale: distance === 0 ? (mobile ? 1.04 : 1.17) : distance === 1 ? .76 : .52,
           rotateY: offset * (mobile ? -8 : -11),
           autoAlpha: distance > (mobile ? 1 : 2) ? 0 : distance === 0 ? 1 : .72 };
