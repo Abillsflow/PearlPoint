@@ -111,13 +111,13 @@
     let lastFocused = null;
     const layout = (index) => {
       const mobile = window.innerWidth <= 760;
-      const gap = mobile ? Math.min(window.innerWidth * .47, 185) : Math.min(window.innerWidth * .235, 315);
+      const gap = mobile ? Math.min(window.innerWidth * .36, 145) : Math.min(window.innerWidth * .165, 220);
       return objects.map((_, i) => {
         const offset = i - index, distance = Math.abs(offset);
         return { x: scene.clientWidth / 2 - objects[i].offsetWidth / 2 + offset * gap,
           y: scene.clientHeight / 2 - objects[i].offsetHeight / 2 + (distance ? 13 + distance * 3 : -7),
           z: distance ? -distance * 90 : 90,
-          scale: distance === 0 ? (mobile ? 1.24 : 1.48) : distance === 1 ? .78 : .56,
+          scale: distance === 0 ? (mobile ? 1.32 : 1.62) : distance === 1 ? .82 : .62,
           rotateY: offset * (mobile ? -8 : -11),
           autoAlpha: distance > (mobile ? 1 : 2) ? 0 : distance === 0 ? 1 : .72 };
       });
@@ -154,7 +154,12 @@
       document.body.classList.remove('service-modal-open');
       if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
     };
-    objects.forEach((object, i) => object.addEventListener('click', () => openModal(i)));
+    objects.forEach((object, i) => {
+      object.setAttribute('type', 'button');
+      object.setAttribute('aria-haspopup', 'dialog');
+      object.addEventListener('click', event => { event.preventDefault(); openModal(i); });
+      object.querySelectorAll('.service-image').forEach(img => img.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); openModal(i); }));
+    });
     dots.forEach((dot, i) => dot.addEventListener('click', () => render(i)));
     dialog.querySelector('.showroom-prev')?.addEventListener('click', () => render(active - 1));
     dialog.querySelector('.showroom-next')?.addEventListener('click', () => render(active + 1));
