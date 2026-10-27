@@ -3,5 +3,14 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/index.html", "destination": "/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/services", "destination": "/services.html" },
+    { "source": "/team", "destination": "/team.html" },
+    { "source": "/work", "destination": "/work.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/faq", "destination": "/faq.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/experts/:slug", "destination": "/experts/:slug.html" }
   ]
 }
