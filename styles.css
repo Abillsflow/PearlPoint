@@ -38,3 +38,10 @@
 body.service-modal-open{overflow:hidden}
 @media(max-width:600px){.service-modal-backdrop{padding:12px;align-items:end}.service-modal{padding:26px 22px 22px;max-height:88vh}.service-modal-topline{margin-bottom:22px}.service-modal .showroom-detail h3{font-size:38px}.service-modal .showroom-detail p{font-size:12px}.service-modal .showroom-controls{margin-top:0}}
 @media(prefers-reduced-motion:reduce){.service-modal-backdrop,.service-modal{transition:none}}
+
+
+/* Uploaded service artwork: image filenames mapped to their matching showroom cards. */
+.showcase-object .service-image{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;object-position:center;z-index:0;pointer-events:none}
+.showcase-object .website-canvas,.showcase-object .commerce-canvas,.showcase-object .campaign-canvas,.showcase-object .search-canvas,.showcase-object .systems-canvas,.showcase-object .feed-canvas{position:relative;overflow:hidden;background:#f2eee6}
+.showcase-object .website-canvas>*:not(.service-image),.showcase-object .commerce-canvas>*:not(.service-image),.showcase-object .campaign-canvas>*:not(.service-image),.showcase-object .search-canvas>*:not(.service-image),.showcase-object .systems-canvas>*:not(.service-image),.showcase-object .feed-canvas>*:not(.service-image){display:none!important}
+.showcase-object .service-image{border:1px solid #ffffff20}
