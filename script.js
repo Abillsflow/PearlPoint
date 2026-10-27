@@ -189,4 +189,23 @@
     window.addEventListener('resize', () => render(active, true), { passive: true });
     render(0, true);
   }
+  // Soft, staggered reveal for the simpler service grid.
+  const serviceTiles = document.querySelectorAll('.service-tile');
+  if (serviceTiles.length) {
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const tileObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = Array.from(serviceTiles).indexOf(entry.target);
+            entry.target.style.transitionDelay = (index % 3) * 90 + 'ms';
+            entry.target.classList.add('is-visible');
+            tileObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      serviceTiles.forEach(tile => tileObserver.observe(tile));
+    } else {
+      serviceTiles.forEach(tile => tile.classList.add('is-visible'));
+    }
+  }
 })();
