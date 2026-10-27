@@ -189,6 +189,20 @@
     window.addEventListener('resize', () => render(active, true), { passive: true });
     render(0, true);
   }
+  const yearNode = document.getElementById('homeYear');
+  if (yearNode) yearNode.textContent = new Date().getFullYear();
+  const revealItems = document.querySelectorAll('.home-work-card, .home-principles article, .home-process-grid article, .home-outcomes-list article');
+  if (revealItems.length) {
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('pp-revealed');
+          revealObserver.unobserve(entry.target);
+        }
+      }), { threshold: 0.12 });
+      revealItems.forEach(item => revealObserver.observe(item));
+    } else revealItems.forEach(item => item.classList.add('pp-revealed'));
+  }
   // Soft, staggered reveal for the simpler service grid.
   const serviceTiles = document.querySelectorAll('.service-tile');
   if (serviceTiles.length) {
