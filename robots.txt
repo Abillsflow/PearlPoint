@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pearlpoint.vercel.app/sitemap.xml
