@@ -79,4 +79,49 @@
       });
     });
   }
+  // Scroll-driven service showroom: one capability takes focus per scroll chapter.
+  const serviceSection = document.querySelector('.services-showcase');
+  if (serviceSection && window.gsap && window.ScrollTrigger) {
+    const arts = gsap.utils.toArray('.service-art');
+    const copies = gsap.utils.toArray('.service-copy');
+    const fill = document.querySelector('.services-progress-fill');
+    const count = document.querySelector('.services-current');
+    const setService = index => {
+      arts.forEach((art, i) => { art.classList.toggle('is-active', i === index); copies[i]?.classList.toggle('is-active', i === index); });
+      if (count) count.textContent = String(index + 1).padStart(2, '0');
+      if (fill) gsap.to(fill, { scaleX: (index + 1) / arts.length, duration: .4, ease: 'power2.out', overwrite: true });
+    };
+    setService(0);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 651px)').matches) {
+      const timeline = gsap.timeline({ scrollTrigger: {
+        trigger: serviceSection, start: 'top top',
+        end: () => '+=' + Math.round(window.innerHeight * (arts.length + .25)),
+        pin: '.services-sticky', pinSpacing: true, scrub: .65, invalidateOnRefresh: true,
+        onUpdate: self => setService(Math.min(arts.length - 1, Math.floor(self.progress * arts.length)))
+      }});
+      arts.forEach((art, index) => {
+        if (!index) return;
+        timeline.fromTo(art, { autoAlpha: 0, y: 25, scale: .94, rotateY: -7 }, { autoAlpha: 1, y: 0, scale: 1, rotateY: 0, duration: .65, ease: 'power3.out' }, index);
+        timeline.fromTo(copies[index], { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: .5, ease: 'power3.out' }, index + .12);
+        timeline.to(arts[index - 1], { autoAlpha: 0, y: -14, scale: 1.02, duration: .35 }, index);
+        timeline.to(copies[index - 1], { autoAlpha: 0, y: -12, duration: .3 }, index);
+      });
+      timeline.to({}, { duration: .4 });
+      ScrollTrigger.refresh();
+    } else {
+      // On small screens, keep the active service readable and touch-friendly.
+      let startY = 0;
+      const stage = document.querySelector('.service-stage');
+      stage?.addEventListener('touchstart', event => { startY = event.changedTouches[0].clientY; }, { passive: true });
+      stage?.addEventListener('touchend', event => {
+        const delta = startY - event.changedTouches[0].clientY;
+        if (Math.abs(delta) > 90) {
+          const active = copies.findIndex(copy => copy.classList.contains('is-active'));
+          setService(Math.max(0, Math.min(arts.length - 1, active + (delta > 0 ? 1 : -1))));
+        }
+      }, { passive: true });
+    }
+    copies.forEach((copy, index) => copy.querySelector('.service-link')?.addEventListener('focus', () => setService(index)));
+  }
+
 })();
