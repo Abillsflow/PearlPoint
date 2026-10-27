@@ -155,3 +155,12 @@
 @media(prefers-reduced-motion:reduce){.pp-price-card{transition:none}}
 
 .pp-capability-expansion{padding:80px 8.5%;background:#f0e9dc}.pp-capability-heading{max-width:660px;margin-bottom:38px}.pp-capability-heading h2{font:500 clamp(40px,5vw,64px)/.98 var(--font);letter-spacing:-.08em;margin:22px 0}.pp-capability-heading h2 em{font-style:normal;color:#a98954}.pp-capability-heading p{font-size:12px;line-height:1.9;color:#73736b;max-width:480px}.pp-capability-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #22252220;border-left:1px solid #22252220}.pp-capability-grid article{padding:24px;border-right:1px solid #22252220;border-bottom:1px solid #22252220;transition:background .25s}.pp-capability-grid article:hover{background:#f7f3eb}.pp-capability-grid article>span{font-size:8px;letter-spacing:1.2px;color:#a98954}.pp-capability-grid h3{font:600 19px var(--font);letter-spacing:-.04em;margin:23px 0 10px}.pp-capability-grid p{min-height:70px;font-size:10px;line-height:1.8;color:#73736b}.pp-capability-grid a{font-size:9px;color:#222522;text-decoration:none;border-bottom:1px solid #b99a65;padding-bottom:4px}.pp-capability-grid a:hover{color:#a98954}@media(max-width:800px){.pp-capability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){.pp-capability-expansion{padding:65px 6%}.pp-capability-grid{grid-template-columns:1fr}.pp-capability-grid p{min-height:0}}
+
+
+/* Contact form delivery states */
+.pp-honeypot{position:absolute!important;left:-10000px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.pp-form-status{min-height:1.5em;margin:10px 0 0}
+.pp-form-status.is-success{color:#2f6d4e}
+.pp-form-status.is-error{color:#a33c32}
+.pp-contact-form button[disabled]{opacity:.68;cursor:wait}
+.pp-contact-form button[aria-busy="true"]{pointer-events:none}
