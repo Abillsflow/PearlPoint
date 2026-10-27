@@ -79,7 +79,7 @@
       });
     });
   }
-  // A single shared spatial showroom: the selected service advances while neighbours remain visible.
+  // Shared 3D showroom with a modal that opens only when a visitor selects a service.
   const scene = document.querySelector('.showroom-scene');
   if (scene) {
     const objects = gsap.utils.toArray('.showcase-object');
@@ -87,13 +87,27 @@
     const dots = gsap.utils.toArray('.showroom-dots button');
     const counter = document.querySelector('.showroom-counter span');
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const originalDetails = document.querySelector('.showroom-details');
+    const backdrop = document.createElement('div');
+    backdrop.className = 'service-modal-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    backdrop.innerHTML = '<section class="service-modal" role="dialog" aria-modal="true" aria-label="Service details"><div class="service-modal-topline"><span>PEARLPOINT / SERVICE OVERVIEW</span><button class="service-modal-close" type="button" aria-label="Close service details">×</button></div></section>';
+    document.body.appendChild(backdrop);
+    const dialog = backdrop.querySelector('.service-modal');
+    details.forEach(detail => dialog.appendChild(detail));
+    const controls = originalDetails?.querySelector('.showroom-controls');
+    if (controls) dialog.appendChild(controls);
+    originalDetails?.remove();
     let active = 0;
+    let lastFocused = null;
     const layout = (index) => {
       const mobile = window.innerWidth <= 760;
       const gap = mobile ? Math.min(window.innerWidth * .47, 185) : Math.min(window.innerWidth * .235, 315);
       return objects.map((_, i) => {
         const offset = i - index, distance = Math.abs(offset);
-        return { x: scene.clientWidth / 2 - objects[i].offsetWidth / 2 + offset * gap, y: scene.clientHeight / 2 - objects[i].offsetHeight / 2 + (distance ? 13 + distance * 3 : -7), z: distance ? -distance * 90 : 90,
+        return { x: scene.clientWidth / 2 - objects[i].offsetWidth / 2 + offset * gap,
+          y: scene.clientHeight / 2 - objects[i].offsetHeight / 2 + (distance ? 13 + distance * 3 : -7),
+          z: distance ? -distance * 90 : 90,
           scale: distance === 0 ? (mobile ? 1.04 : 1.17) : distance === 1 ? .76 : .52,
           rotateY: offset * (mobile ? -8 : -11),
           autoAlpha: distance > (mobile ? 1 : 2) ? 0 : distance === 0 ? 1 : .72 };
@@ -108,21 +122,40 @@
         object.classList.toggle('is-focused', i === active);
         object.setAttribute('aria-pressed', String(i === active));
       });
-      details.forEach((detail, i) => {
-        detail.classList.toggle('is-current', i === active);
-        gsap.to(detail, { autoAlpha: i === active ? 1 : 0, y: i === active ? 0 : 10, duration: reduced ? 0 : .32, overwrite: true });
-      });
+      details.forEach((detail, i) => detail.classList.toggle('is-current', i === active));
       dots.forEach((dot, i) => dot.classList.toggle('is-current', i === active));
       if (counter) counter.textContent = String(active + 1).padStart(2, '0');
     };
-    objects.forEach((object, i) => object.addEventListener('click', () => render(i)));
+    const openModal = (index) => {
+      lastFocused = document.activeElement;
+      render(index);
+      backdrop.classList.add('is-open');
+      backdrop.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('service-modal-open');
+      backdrop.querySelector('.service-modal-close')?.focus();
+    };
+    const closeModal = () => {
+      backdrop.classList.remove('is-open');
+      backdrop.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('service-modal-open');
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+    };
+    objects.forEach((object, i) => object.addEventListener('click', () => openModal(i)));
     dots.forEach((dot, i) => dot.addEventListener('click', () => render(i)));
-    document.querySelector('.showroom-prev')?.addEventListener('click', () => render(active - 1));
-    document.querySelector('.showroom-next')?.addEventListener('click', () => render(active + 1));
+    dialog.querySelector('.showroom-prev')?.addEventListener('click', () => render(active - 1));
+    dialog.querySelector('.showroom-next')?.addEventListener('click', () => render(active + 1));
+    backdrop.querySelector('.service-modal-close')?.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', event => { if (event.target === backdrop) closeModal(); });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal();
+      if (event.key === 'ArrowRight' && backdrop.classList.contains('is-open')) render(active + 1);
+      if (event.key === 'ArrowLeft' && backdrop.classList.contains('is-open')) render(active - 1);
+    });
     if (window.matchMedia('(min-width: 761px)').matches && !reduced) {
       ScrollTrigger.create({
         trigger: scene, start: 'top 72%', end: 'bottom 30%',
         onUpdate: self => {
+          if (backdrop.classList.contains('is-open')) return;
           const next = Math.min(objects.length - 1, Math.floor(self.progress * objects.length));
           if (next !== active) render(next);
         }
@@ -137,5 +170,4 @@
     window.addEventListener('resize', () => render(active, true), { passive: true });
     render(0, true);
   }
-
 })();
