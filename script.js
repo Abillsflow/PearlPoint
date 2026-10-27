@@ -38,81 +38,45 @@
   gsap.from('.below-fold > *', { scrollTrigger: { trigger: '.below-fold', start: 'top 78%' }, y: 28, opacity: 0, duration: .8, stagger: .12, ease: 'power3.out' });
   const visual = document.querySelector('.hero-visual');
   const pearl = document.querySelector('.pearl');
-  if (visual && pearl) {
-    // Click and drag the pearl to rotate it freely in 3D — including full 360° turns.
-    let dragging = false;
-    let lastX = 0;
-    let lastY = 0;
-    let rotationX = 0;
-    let rotationY = 0;
-    let velocityX = 0;
-    let velocityY = 0;
-
-    pearl.setAttribute('role', 'img');
-    pearl.setAttribute('aria-label', 'Interactive pearl. Click or touch and drag to rotate 360 degrees.');
-    pearl.style.touchAction = 'none';
-
-    pearl.addEventListener('pointerdown', e => {
-      dragging = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
-      velocityX = velocityY = 0;
-      pearl.classList.add('is-dragging');
-      pearl.setPointerCapture(e.pointerId);
-      gsap.killTweensOf(pearl, 'rotateX,rotateY');
-      e.preventDefault();
+  if (visual && pearl && window.matchMedia('(pointer:fine)').matches) {
+    // The original pearl stays in place; it only gently follows the pointer.
+    // No dragging, no spinning, and no automatic rotation.
+    visual.addEventListener('pointermove', event => {
+      const rect = visual.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      gsap.to(pearl, {
+        rotateY: x * 12,
+        rotateX: -y * 10,
+        duration: 0.9,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+      gsap.to('.visual-orbit', {
+        x: x * -5,
+        y: y * -4,
+        duration: 1.15,
+        stagger: 0.04,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
     });
-
-    pearl.addEventListener('pointermove', e => {
-      if (!dragging) return;
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
-      lastX = e.clientX;
-      lastY = e.clientY;
-      velocityY = dx * 0.9;
-      velocityX = -dy * 0.9;
-      rotationY += velocityY;
-      rotationX += velocityX;
-      gsap.set(pearl, { rotateX: rotationX, rotateY: rotationY, overwrite: true });
+    visual.addEventListener('pointerleave', () => {
+      gsap.to(pearl, {
+        rotateX: 0,
+        rotateY: 0,
+        duration: 1.1,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
+      gsap.to('.visual-orbit', {
+        x: 0,
+        y: 0,
+        duration: 1.2,
+        stagger: 0.04,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      });
     });
-
-    const releasePearl = () => {
-      if (!dragging) return;
-      dragging = false;
-      pearl.classList.remove('is-dragging');
-      // A small, smooth follow-through makes the drag feel tactile.
-      gsap.to({ x: 0 }, {
-        x: 1,
-        duration: 0.65,
-        ease: 'power2.out',
-        onUpdate() {
-          const progress = this.progress();
-          gsap.set(pearl, {
-            rotateY: rotationY + velocityY * progress * 0.65,
-            rotateX: rotationX + velocityX * progress * 0.65
-          });
-        },
-        onComplete() {
-          rotationY += velocityY * 0.65;
-          rotationX += velocityX * 0.65;
-        }
-      });
-    };
-    pearl.addEventListener('pointerup', releasePearl);
-    pearl.addEventListener('pointercancel', releasePearl);
-    pearl.addEventListener('lostpointercapture', releasePearl);
-
-    if (window.matchMedia('(pointer:fine)').matches) {
-      visual.addEventListener('pointermove', e => {
-        if (dragging) return;
-        const r = visual.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - .5;
-        const y = (e.clientY - r.top) / r.height - .5;
-        gsap.to('.visual-orbit', { x: x * -9, y: y * -7, duration: 1.1, stagger: .04, ease: 'power2.out', overwrite: 'auto' });
-      });
-      visual.addEventListener('pointerleave', () => {
-        gsap.to('.visual-orbit', { x: 0, y: 0, duration: 1, stagger: .04, ease: 'power2.out' });
-      });
-    }
   }
 })();
