@@ -79,49 +79,63 @@
       });
     });
   }
-  // Scroll-driven service showroom: one capability takes focus per scroll chapter.
-  const serviceSection = document.querySelector('.services-showcase');
-  if (serviceSection && window.gsap && window.ScrollTrigger) {
-    const arts = gsap.utils.toArray('.service-art');
-    const copies = gsap.utils.toArray('.service-copy');
-    const fill = document.querySelector('.services-progress-fill');
-    const count = document.querySelector('.services-current');
-    const setService = index => {
-      arts.forEach((art, i) => { art.classList.toggle('is-active', i === index); copies[i]?.classList.toggle('is-active', i === index); });
-      if (count) count.textContent = String(index + 1).padStart(2, '0');
-      if (fill) gsap.to(fill, { scaleX: (index + 1) / arts.length, duration: .4, ease: 'power2.out', overwrite: true });
-    };
-    setService(0);
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 651px)').matches) {
-      const timeline = gsap.timeline({ scrollTrigger: {
-        trigger: serviceSection, start: 'top top',
-        end: () => '+=' + Math.round(window.innerHeight * (arts.length + .25)),
-        pin: '.services-sticky', pinSpacing: true, scrub: .65, invalidateOnRefresh: true,
-        onUpdate: self => setService(Math.min(arts.length - 1, Math.floor(self.progress * arts.length)))
-      }});
-      arts.forEach((art, index) => {
-        if (!index) return;
-        timeline.fromTo(art, { autoAlpha: 0, y: 25, scale: .94, rotateY: -7 }, { autoAlpha: 1, y: 0, scale: 1, rotateY: 0, duration: .65, ease: 'power3.out' }, index);
-        timeline.fromTo(copies[index], { autoAlpha: 0, y: 22 }, { autoAlpha: 1, y: 0, duration: .5, ease: 'power3.out' }, index + .12);
-        timeline.to(arts[index - 1], { autoAlpha: 0, y: -14, scale: 1.02, duration: .35 }, index);
-        timeline.to(copies[index - 1], { autoAlpha: 0, y: -12, duration: .3 }, index);
+  // A single shared spatial showroom: the selected service advances while neighbours remain visible.
+  const scene = document.querySelector('.showroom-scene');
+  if (scene) {
+    const objects = gsap.utils.toArray('.showcase-object');
+    const details = gsap.utils.toArray('.showroom-detail');
+    const dots = gsap.utils.toArray('.showroom-dots button');
+    const counter = document.querySelector('.showroom-counter span');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let active = 0;
+    const layout = (index) => {
+      const mobile = window.innerWidth <= 760;
+      const gap = mobile ? Math.min(window.innerWidth * .47, 185) : Math.min(window.innerWidth * .235, 315);
+      return objects.map((_, i) => {
+        const offset = i - index, distance = Math.abs(offset);
+        return { x: offset * gap, y: distance ? 13 + distance * 3 : -7, z: distance ? -distance * 90 : 90,
+          scale: distance === 0 ? (mobile ? 1.04 : 1.17) : distance === 1 ? .76 : .52,
+          rotateY: offset * (mobile ? -8 : -11),
+          autoAlpha: distance > (mobile ? 1 : 2) ? 0 : distance === 0 ? 1 : .72 };
       });
-      timeline.to({}, { duration: .4 });
-      ScrollTrigger.refresh();
-    } else {
-      // On small screens, keep the active service readable and touch-friendly.
-      let startY = 0;
-      const stage = document.querySelector('.service-stage');
-      stage?.addEventListener('touchstart', event => { startY = event.changedTouches[0].clientY; }, { passive: true });
-      stage?.addEventListener('touchend', event => {
-        const delta = startY - event.changedTouches[0].clientY;
-        if (Math.abs(delta) > 90) {
-          const active = copies.findIndex(copy => copy.classList.contains('is-active'));
-          setService(Math.max(0, Math.min(arts.length - 1, active + (delta > 0 ? 1 : -1))));
+    };
+    const render = (next, instant = false) => {
+      active = (next + objects.length) % objects.length;
+      const poses = layout(active);
+      objects.forEach((object, i) => {
+        object.style.zIndex = String(20 - Math.abs(i - active));
+        gsap.to(object, { ...poses[i], duration: instant || reduced ? 0 : .85, ease: 'power3.inOut', overwrite: true });
+        object.classList.toggle('is-focused', i === active);
+        object.setAttribute('aria-pressed', String(i === active));
+      });
+      details.forEach((detail, i) => {
+        detail.classList.toggle('is-current', i === active);
+        gsap.to(detail, { autoAlpha: i === active ? 1 : 0, y: i === active ? 0 : 10, duration: reduced ? 0 : .32, overwrite: true });
+      });
+      dots.forEach((dot, i) => dot.classList.toggle('is-current', i === active));
+      if (counter) counter.textContent = String(active + 1).padStart(2, '0');
+    };
+    objects.forEach((object, i) => object.addEventListener('click', () => render(i)));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => render(i)));
+    document.querySelector('.showroom-prev')?.addEventListener('click', () => render(active - 1));
+    document.querySelector('.showroom-next')?.addEventListener('click', () => render(active + 1));
+    if (window.matchMedia('(min-width: 761px)').matches && !reduced) {
+      ScrollTrigger.create({
+        trigger: scene, start: 'top 72%', end: 'bottom 30%',
+        onUpdate: self => {
+          const next = Math.min(objects.length - 1, Math.floor(self.progress * objects.length));
+          if (next !== active) render(next);
         }
-      }, { passive: true });
+      });
     }
-    copies.forEach((copy, index) => copy.querySelector('.service-link')?.addEventListener('focus', () => setService(index)));
+    let touchX = 0;
+    scene.addEventListener('touchstart', event => { touchX = event.changedTouches[0].clientX; }, { passive: true });
+    scene.addEventListener('touchend', event => {
+      const delta = touchX - event.changedTouches[0].clientX;
+      if (Math.abs(delta) > 45) render(active + (delta > 0 ? 1 : -1));
+    }, { passive: true });
+    window.addEventListener('resize', () => render(active, true), { passive: true });
+    render(0, true);
   }
 
 })();
