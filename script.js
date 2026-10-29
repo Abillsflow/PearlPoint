@@ -74,6 +74,9 @@
       node.parentNode?.replaceChild(fragment, node);
     });
   };
+  const iconStyles = document.createElement('style');
+  iconStyles.textContent = '.pp-inline-icon-wrap{display:inline-flex;align-items:center;justify-content:center;vertical-align:-.16em;line-height:1;margin-inline:.12em}.pp-inline-icon{display:block;width:1em;height:1em;min-width:12px;min-height:12px;stroke:currentColor}a .pp-inline-icon-wrap,button .pp-inline-icon-wrap{margin-inline:.25em}';
+  document.head.appendChild(iconStyles);
   replaceDecorativeGlyphs();
 
   if (!window.gsap) return;
