@@ -14,7 +14,7 @@
   // Replace pictographic emoji and text-arrow glyphs with consistent, accessible inline SVG icons.
   // This runs on every page before any optional animation-library early return.
   const replaceDecorativeGlyphs = () => {
-    const glyphPattern = /[\\u{1F000}-\\u{1FAFF}\\u{2600}-\\u{27FF}\\u{2300}-\\u{23FF}\\u{2190}-\\u{21FF}\\u{2B00}-\\u{2BFF}\\uFE0F\\u200D]/gu;
+    const glyphPattern = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27FF}\u{2300}-\u{23FF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\uFE0F\u200D]/gu;
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         if (!node.nodeValue || !glyphPattern.test(node.nodeValue)) { glyphPattern.lastIndex = 0; return NodeFilter.FILTER_REJECT; }
@@ -60,7 +60,7 @@
         const index = match.index;
         if (index > cursor) fragment.appendChild(document.createTextNode(value.slice(cursor, index)));
         // Ignore variation selectors and joiners when the matched item is only a formatting code point.
-        if (!/^[\\uFE0F\\u200D]+$/u.test(match[0])) {
+        if (!/^[\uFE0F\u200D]+$/u.test(match[0])) {
           const icon = iconSvg(match[0]);
           const holder = document.createElement('span');
           holder.className = 'pp-inline-icon-wrap';
