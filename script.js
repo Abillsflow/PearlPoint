@@ -11,6 +11,71 @@
     menu?.setAttribute('aria-expanded', 'false');
   }));
 
+  // Replace pictographic emoji and text-arrow glyphs with consistent, accessible inline SVG icons.
+  // This runs on every page before any optional animation-library early return.
+  const replaceDecorativeGlyphs = () => {
+    const glyphPattern = /[\\u{1F000}-\\u{1FAFF}\\u{2600}-\\u{27FF}\\u{2300}-\\u{23FF}\\u{2190}-\\u{21FF}\\u{2B00}-\\u{2BFF}\\uFE0F\\u200D]/gu;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue || !glyphPattern.test(node.nodeValue)) { glyphPattern.lastIndex = 0; return NodeFilter.FILTER_REJECT; }
+        glyphPattern.lastIndex = 0;
+        const parent = node.parentElement;
+        if (!parent || /^(SCRIPT|STYLE|TEXTAREA|INPUT|CODE|PRE|SVG)$/i.test(parent.tagName) || parent.closest('[data-keep-glyphs]')) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    const iconSvg = (glyph) => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('width', '16');
+      svg.setAttribute('height', '16');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      svg.classList.add('pp-inline-icon');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '1.8');
+      svg.setAttribute('stroke-linecap', 'round');
+      svg.setAttribute('stroke-linejoin', 'round');
+      const arrow = /[↗↘↖↙⬆⬇⬅➡⇗⇘⇖⇙🡕🡖]/u.test(glyph);
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      if (arrow) {
+        path.setAttribute('d', /[↘⇘🡖]/u.test(glyph) ? 'M7 7h10v10M17 7 7 17' : /[↖⇖]/u.test(glyph) ? 'M17 7H7v10M7 7l10 10' : /[↙⇙]/u.test(glyph) ? 'M17 17H7V7M7 17 17 7' : 'M7 17V7h10M7 7l10 10');
+      } else {
+        path.setAttribute('d', 'M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15Z');
+      }
+      svg.appendChild(path);
+      return svg;
+    };
+    nodes.forEach(node => {
+      const value = node.nodeValue;
+      glyphPattern.lastIndex = 0;
+      if (!glyphPattern.test(value)) return;
+      glyphPattern.lastIndex = 0;
+      const fragment = document.createDocumentFragment();
+      let cursor = 0;
+      for (const match of value.matchAll(glyphPattern)) {
+        const index = match.index;
+        if (index > cursor) fragment.appendChild(document.createTextNode(value.slice(cursor, index)));
+        // Ignore variation selectors and joiners when the matched item is only a formatting code point.
+        if (!/^[\\uFE0F\\u200D]+$/u.test(match[0])) {
+          const icon = iconSvg(match[0]);
+          const holder = document.createElement('span');
+          holder.className = 'pp-inline-icon-wrap';
+          holder.setAttribute('aria-hidden', 'true');
+          holder.appendChild(icon);
+          fragment.appendChild(holder);
+        }
+        cursor = index + match[0].length;
+      }
+      if (cursor < value.length) fragment.appendChild(document.createTextNode(value.slice(cursor)));
+      node.parentNode?.replaceChild(fragment, node);
+    });
+  };
+  replaceDecorativeGlyphs();
+
   if (!window.gsap) return;
   gsap.registerPlugin(ScrollTrigger);
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
